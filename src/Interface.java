@@ -22,7 +22,7 @@ public class Interface {
         //Bottom while loop for all other procedures related to being logged into the database
         while(top){
             boolean validLogin = false;
-
+            bot = true;
             System.out.println("Please select from the following options.");
             System.out.println("\t 1. Create new account");
             System.out.println("\t 2. Enter account information");
@@ -58,14 +58,61 @@ public class Interface {
                 System.out.println("\t 1. Create, Edit, or Delete a Recipe");
                 System.out.println("\t 2. Categorize a Recipe");
                 System.out.println("\t 3. Search a Recipe");
-                System.out.println("\t 4. Remove an Entry");
-                System.out.println("\t 5. Print out phone book");
+                System.out.println("\t 4. Sort Recipes");
+                System.out.println("\t 5. Mark a Recipe");
                 System.out.println("\t 0. Exit");
 
-                int userChoice = scan.nextInt();
-                break;
+                try{
+                    int userChoice = scan.nextInt();
+                    switch (userChoice){
+                        case 1:
+                            System.out.println("Please select from the following options.");
+                            System.out.println("\t 1. Create a Recipe");
+                            System.out.println("\t 2. Edit a Recipe");
+                            System.out.println("\t 3. Delete a Recipe");
+                            try{
+                                int userChoice2 = scan.nextInt();
+                                switch(userChoice2){
+                                    case 1:
+                                        //create recipe
+                                        break;
+                                    case 2:
+                                        //edit recipe
+                                        break;
+                                    case 3:
+                                        //delete recipe
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            } catch(InputMismatchException ime){
+                                System.out.println("Sorry, the input you entered wasn't an integer");
+                            }
+                            break;
+                        case 2:
+                            //database work
+                            break;
+                        case 3:
+                            //database work
+                            break;
+                        case 4:
+                            //database work
+                            break;
+                        case 5:
+                            //database work
+                            break;
+                        case 0:
+                            bot = false;
+                            validLogin = false;
+                            break;
+                        default:
+                            System.out.println("Invalid input, try again");
+                            break;
+                    }
+                } catch(InputMismatchException ime){
+                    System.out.println("Sorry, the input you entered wasn't an integer");
+                }
             }
-            break;
         }
     }
 
@@ -82,5 +129,7 @@ public class Interface {
         //else return false
         return false;
     }
+
+
 
 }
