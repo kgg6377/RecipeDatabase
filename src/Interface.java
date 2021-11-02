@@ -162,26 +162,38 @@ public class Interface {
                                 int userChoice2 = scan.nextInt();
                                 switch(userChoice2){
                                     case 1:
+                                        scan.nextLine();
                                         System.out.println("Recipe Name: ");
-                                        String recipeName = scan.next();
+                                        String recipeName = scan.nextLine();
                                         System.out.println("Difficulty(easy, medium, hard): ");
                                         String difficulty = scan.next();
+                                        scan.nextLine();
                                         System.out.println("Steps(One long description): ");
-                                        String steps = scan.next();
+                                        String steps = scan.nextLine();
                                         System.out.println("Description: ");
-                                        String description = scan.next();
+                                        String description = scan.nextLine();
                                         System.out.println("Cook time: ");
-                                        String cook_time = scan.next();
+                                        String cook_time = scan.nextLine();
                                         System.out.println("Servings: ");
-                                        String servings = scan.next();
+                                        String servings = scan.nextLine();
 
-                                        rf.createRecipe(recipeName, difficulty, steps, description, cook_time, servings);
+                                        rf.createRecipe(recipeName, difficulty, steps, description, cook_time, servings, username);
                                         break;
                                     case 2:
-                                        //edit recipe
+                                        scan.nextLine();
+                                        System.out.println("Column to be changed: ");
+                                        String column = scan.nextLine();
+                                        System.out.println("Value to be changed to: ");
+                                        String change = scan.nextLine();
+                                        System.out.println("Modify this recipe: ");
+                                        String recipe = scan.nextLine();
+                                        rf.editRecipe(column, change, recipe, username);
                                         break;
                                     case 3:
-                                        //delete recipe
+                                        scan.nextLine();
+                                        System.out.println("Enter recipe that shall be deleted: ");
+                                        String delete = scan.nextLine();
+                                        rf.deleteRecipe(delete, username);
                                         break;
                                     default:
                                         break;
@@ -262,7 +274,7 @@ public class Interface {
      */
     public boolean login(String username, String password, Connection conn) throws SQLException {
         boolean isCorrect = false;
-        PreparedStatement preparedStatement = conn.prepareStatement("SELECT exists(SELECT 1 FROM \"user\" WHERE username = 'kevin')");
+        PreparedStatement preparedStatement = conn.prepareStatement("SELECT exists(SELECT 1 FROM \"user\" WHERE username = '" + username + "')");
         if (preparedStatement.execute()){
             PreparedStatement ps = conn.prepareStatement("SELECT password FROM \"user\" where username = '" + username + "'");
             ResultSet resultSet = ps.executeQuery();
