@@ -1,11 +1,11 @@
 import Objects.*;
 import org.postgresql.util.PSQLException;
 
+import java.awt.*;
 import java.sql.*;
 import java.time.*;
 import java.util.*;
 import com.jcraft.jsch.*;
-
 import javax.xml.transform.Result;
 import java.sql.PreparedStatement;
 import java.util.Properties;
@@ -77,7 +77,7 @@ public class Interface {
     /***
      * Main UI function
      */
-    public void RunUI(Connection conn, Session session) throws SQLException {
+    public void RunUI(Connection conn, Session session) {
         if(conn == null) {
             System.out.println("Connection is null");
             return;
@@ -100,24 +100,26 @@ public class Interface {
             System.out.println("\t 2. Enter account information");
             System.out.println("\t 3. Leave Program");
 
+            String username = "";
+
             try{
                 int option = scan.nextInt();
                 switch (option){
                     case 1:
                         //ask user for username,password
                         System.out.println("Username: ");
-                        String username = scan.next();
+                        String tempUsername = scan.next();
                         System.out.println("Password: ");
-                        String password = scan.next();
+                        String tempPassword = scan.next();
                         String date = LocalDate.now().toString();
 
-                        createAccount(username, password, date, conn);
+                        createAccount(tempUsername, tempPassword, date, conn);
                         break;
                     case 2:
                         System.out.println("Username: ");
                         username = scan.next();
                         System.out.println("Password: ");
-                        password = scan.next();
+                        String password = scan.next();
                         validLogin = login(username, password, conn);
                         break;
                     case 3:
@@ -155,11 +157,25 @@ public class Interface {
                             System.out.println("\t 1. Create a Recipe");
                             System.out.println("\t 2. Edit a Recipe");
                             System.out.println("\t 3. Delete a Recipe");
+                            RecipeFunctionality rf = new RecipeFunctionality(username, conn);
                             try{
                                 int userChoice2 = scan.nextInt();
                                 switch(userChoice2){
                                     case 1:
-                                        //create recipe
+                                        System.out.println("Recipe Name: ");
+                                        String recipeName = scan.next();
+                                        System.out.println("Difficulty(easy, medium, hard): ");
+                                        String difficulty = scan.next();
+                                        System.out.println("Steps(One long description): ");
+                                        String steps = scan.next();
+                                        System.out.println("Description: ");
+                                        String description = scan.next();
+                                        System.out.println("Cook time: ");
+                                        String cook_time = scan.next();
+                                        System.out.println("Servings: ");
+                                        String servings = scan.next();
+
+                                        rf.createRecipe(recipeName, difficulty, steps, description, cook_time, servings);
                                         break;
                                     case 2:
                                         //edit recipe
@@ -172,6 +188,8 @@ public class Interface {
                                 }
                             } catch(InputMismatchException ime){
                                 System.out.println("Sorry, the input you entered wasn't an integer");
+                            } catch (SQLException throwables) {
+                                throwables.printStackTrace();
                             }
                             break;
                         case 2:
@@ -201,6 +219,22 @@ public class Interface {
         }
 
     }
+/*
+    public static String catchInput(String label, Scanner scan){
+        System.out.println(label);
+        String output = "";
+        boolean isValidResponse = false;
+        while(!isValidResponse){
+            try{
+                output = scan.next();
+                isValidResponse = true;
+            }catch (InputMismatchException e){
+                System.out.println("Error, please enter a string");
+                System.out.println(label);
+            }
+        }
+        return output;
+    }*/
 
     /***
      * Create a new account within the database
@@ -249,9 +283,4 @@ public class Interface {
         }
         return isCorrect;
     }
-
-
-
-
-
 }
