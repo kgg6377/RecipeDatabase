@@ -7,7 +7,7 @@ public class Recipe {
     private final String creationDate;
     private final String NAME;
     private final String steps;
-    private final ArrayList<Ingredient> ingredientArrayList;
+    private final ArrayList<Integer> ingredientArrayList;
 
     private Difficulty difficulty;
     private String description;
@@ -17,7 +17,7 @@ public class Recipe {
     private ArrayList<Category> categoryArrayList;
 
 
-    public Recipe(String name, ArrayList<Ingredient> ingredientArrayList,
+    public Recipe(String name, ArrayList<Integer> ingredientArrayList,
                   String steps, User createdBy, String creationDate) {
         this.NAME = name;
         this.ingredientArrayList = ingredientArrayList;
@@ -98,7 +98,7 @@ public class Recipe {
         return categoryArrayList;
     }
 
-    public ArrayList<Ingredient> getIngredientArrayList() {
+    public ArrayList<Integer> getIngredientArrayList() {
         return ingredientArrayList;
     }
 

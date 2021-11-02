@@ -1,21 +1,93 @@
 import Objects.*;
+import org.postgresql.util.PSQLException;
+
+import java.sql.*;
+import java.time.*;
 import java.util.*;
+import com.jcraft.jsch.*;
+
+import javax.xml.transform.Result;
+import java.sql.PreparedStatement;
+import java.util.Properties;
 
 public class Interface {
 
-    public static void main(String[] args) {
-        System.out.println("Hello");
+    public static void main(String[] args) throws SQLException{
+        Interface i = new Interface();
 
+        Scanner scan = new Scanner(System.in);
+
+        int lport = 5432;
+        String rhost = "starbug.cs.rit.edu";
+        int rport = 5432;
+       /* System.out.print("Username: ");
+        String username = scan.nextLine();
+        System.out.print("Password: ");
+        String password = scan.nextLine();
+*/
+        String username = "kgg6377";
+        String password = "GomezFam6014!@";
+        String databaseName = "p320_13"; //change to your database name
+
+        String driverName = "org.postgresql.Driver";
+        Connection conn = null;
+        Session session = null;
+        try {
+            java.util.Properties config = new java.util.Properties();
+            config.put("StrictHostKeyChecking", "no");
+            JSch jsch = new JSch();
+            session = jsch.getSession(username, rhost, 22);
+            session.setPassword(password);
+            session.setConfig(config);
+            session.setConfig("PreferredAuthentications","publickey,keyboard-interactive,password");
+            session.connect();
+            System.out.println("Connected");
+            int assigned_port = session.setPortForwardingL(lport, "localhost", rport);
+            System.out.println("Port Forwarded");
+
+            // Assigned port could be different from 5432 but rarely happens
+            String url = "jdbc:postgresql://localhost:"+ assigned_port + "/" + databaseName;
+
+            System.out.println("database Url: " + url);
+            Properties props = new Properties();
+            props.put("user", username);
+            props.put("password", password);
+
+            Class.forName(driverName);
+            conn = DriverManager.getConnection(url, props);
+            System.out.println("Database connection established");
+
+            i.RunUI(conn, session);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (conn != null && !conn.isClosed()) {
+                System.out.println("Closing Database Connection");
+                conn.close();
+            }
+            if (session != null && session.isConnected()) {
+                System.out.println("Closing SSH Connection");
+                session.disconnect();
+            }
+        }
     }
 
     /***
      * Main UI function
      */
-    public void RunUI(){
+    public void RunUI(Connection conn, Session session) throws SQLException {
+        if(conn == null) {
+            System.out.println("Connection is null");
+            return;
+        }
+
         Scanner scan = new Scanner(System.in);
 
         System.out.println("Welcome to the Recipe Domain UI");
         boolean top = true, bot = true;
+
 
         //Two while loops
         //Top while loop for creating a new account and logging in
@@ -26,7 +98,7 @@ public class Interface {
             System.out.println("Please select from the following options.");
             System.out.println("\t 1. Create new account");
             System.out.println("\t 2. Enter account information");
-            System.out.println("\t 3. Exit");
+            System.out.println("\t 3. Leave Program");
 
             try{
                 int option = scan.nextInt();
@@ -34,22 +106,35 @@ public class Interface {
                     case 1:
                         //ask user for username,password
                         System.out.println("Username: ");
-                        String username = scan.nextLine();
+                        String username = scan.next();
                         System.out.println("Password: ");
-                        String password = scan.nextLine();
-                        //insert user into database
+                        String password = scan.next();
+                        String date = LocalDate.now().toString();
+
+                        createAccount(username, password, date, conn);
                         break;
                     case 2:
-                        //call login function
-                        //validLogin = login(String username, String password);
+                        System.out.println("Username: ");
+                        username = scan.next();
+                        System.out.println("Password: ");
+                        password = scan.next();
+                        validLogin = login(username, password, conn);
                         break;
                     case 3:
+                        if (!conn.isClosed()) {
+                            System.out.println("Closing Database Connection");
+                            conn.close();
+                        }
+                        if (session != null && session.isConnected()) {
+                            System.out.println("Closing SSH Connection");
+                            session.disconnect();
+                        }
                         System.exit(0);
                     default:
                         System.out.println("Invalid input, try again");
                         break;
                 }
-            } catch(InputMismatchException ime){
+            } catch(InputMismatchException | SQLException ime){
                 System.out.println("Sorry, the input you entered wasn't an integer");
             }
 
@@ -114,21 +199,58 @@ public class Interface {
                 }
             }
         }
+
     }
 
     /***
-     * Check if the
+     * Create a new account within the database
+     * @param username A username created by the user
+     * @param password A password created by the user
+     * @param currentDate Current Date the users account was created
+     * @param conn Connection to the database
+     * @throws SQLException If the username already exists an error will be thrown and caught
+     */
+    public void createAccount(String username, String password, String currentDate, Connection conn) throws SQLException {
+        PreparedStatement preparedStatement = conn.prepareStatement("INSERT INTO public.\"user\" (username, password, created_date, last_accessed)\n" +
+                "VALUES ('" + username + "', '" + password + "', '" + currentDate + "', '" + currentDate + "')");
+        try{
+            preparedStatement.executeUpdate();
+        }catch (PSQLException e){
+            System.out.println("Username has already been taken");
+        }
+    }
+
+    /***s
+     * Check if the user entered a valid username and password, if the user enters a valid username they must also enter
+     * a valid password to be allowed to modify tables and do other operations.
      * @param username
      * @return
      */
-    public boolean login(String username, String password){
-        //we will need to create a function to check the tables
-        //if user name exists first
-        //  if name exists allow the user to "login", return true
-        //  else return false
-        //else return false
-        return false;
+    public boolean login(String username, String password, Connection conn) throws SQLException {
+        boolean isCorrect = false;
+        PreparedStatement preparedStatement = conn.prepareStatement("SELECT exists(SELECT 1 FROM \"user\" WHERE username = 'kevin')");
+        if (preparedStatement.execute()){
+            PreparedStatement ps = conn.prepareStatement("SELECT password FROM \"user\" where username = '" + username + "'");
+            ResultSet resultSet = ps.executeQuery();
+            resultSet.next();
+            try{
+                String databasePassword = resultSet.getString(1);
+                if(databasePassword.equals(password)){
+                    System.out.println("Logged in, correct password");
+                    isCorrect = true;
+                }else {
+                    System.out.println("Try again, incorrect password");
+                }
+            } catch(PSQLException e){
+                System.out.println("Try again, make sure that the correct password is being entered for the respective username");
+            }
+        }else{
+            System.out.println("The username you just entered doesn't exist, try again.");
+        }
+        return isCorrect;
     }
+
+
 
 
 
