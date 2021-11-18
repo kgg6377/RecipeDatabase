@@ -59,7 +59,6 @@ public class Interface {
 
             i.RunUI(conn, session);
 
-
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -88,7 +87,6 @@ public class Interface {
         System.out.println("Welcome to the Recipe Domain UI");
         boolean top = true, bot = true;
 
-
         //Two while loops
         //Top while loop for creating a new account and logging in
         //Bottom while loop for all other procedures related to being logged into the database
@@ -101,6 +99,7 @@ public class Interface {
             System.out.println("\t 3. Leave Program");
 
             String username = "";
+            String date = LocalDate.now().toString();
 
             try{
                 int option = scan.nextInt();
@@ -111,7 +110,6 @@ public class Interface {
                         String tempUsername = scan.next();
                         System.out.println("Password: ");
                         String tempPassword = scan.next();
-                        String date = LocalDate.now().toString();
 
                         createAccount(tempUsername, tempPassword, date, conn);
                         break;
@@ -176,23 +174,28 @@ public class Interface {
                                         String cook_time = scan.nextLine();
                                         System.out.println("Servings: ");
                                         String servings = scan.nextLine();
+                                        System.out.println("Rating: ");
+                                        String rating = scan.nextLine();
+                                        System.out.println("Category: ");
+                                        String category = scan.nextLine();
 
-                                        rf.createRecipe(recipeName, difficulty, steps, description, cook_time, servings, username);
+                                        rf.createRecipe(recipeName, difficulty, steps, description, cook_time, servings, rating, date, username, category);
                                         break;
                                     case 2:
                                         scan.nextLine();
-                                        System.out.println("Column to be changed: ");
-                                        String column = scan.nextLine();
-                                        System.out.println("Value to be changed to: ");
-                                        String change = scan.nextLine();
-                                        System.out.println("Modify this recipe: ");
+                                        System.out.println("Recipe: ");
                                         String recipe = scan.nextLine();
+                                        System.out.println("Column: ");
+                                        String column = scan.nextLine();
+                                        System.out.println("Change value to: ");
+                                        String change = scan.nextLine();
                                         rf.editRecipe(column, change, recipe, username);
                                         break;
                                     case 3:
                                         scan.nextLine();
                                         System.out.println("Enter recipe that shall be deleted: ");
                                         String delete = scan.nextLine();
+
                                         rf.deleteRecipe(delete, username);
                                         break;
                                     default:
@@ -231,22 +234,6 @@ public class Interface {
         }
 
     }
-/*
-    public static String catchInput(String label, Scanner scan){
-        System.out.println(label);
-        String output = "";
-        boolean isValidResponse = false;
-        while(!isValidResponse){
-            try{
-                output = scan.next();
-                isValidResponse = true;
-            }catch (InputMismatchException e){
-                System.out.println("Error, please enter a string");
-                System.out.println(label);
-            }
-        }
-        return output;
-    }*/
 
     /***
      * Create a new account within the database
