@@ -148,6 +148,7 @@ public class Interface {
                 System.out.println("\t 0. Exit");
 
                 try{
+                    RecipeFunctionality rf = new RecipeFunctionality(username, conn);
                     int userChoice = scan.nextInt();
                     switch (userChoice){
                         case 1:
@@ -155,7 +156,6 @@ public class Interface {
                             System.out.println("\t 1. Create a Recipe");
                             System.out.println("\t 2. Edit a Recipe");
                             System.out.println("\t 3. Delete a Recipe");
-                            RecipeFunctionality rf = new RecipeFunctionality(username, conn);
                             try{
                                 int userChoice2 = scan.nextInt();
                                 switch(userChoice2){
@@ -176,10 +176,8 @@ public class Interface {
                                         String servings = scan.nextLine();
                                         System.out.println("Rating: ");
                                         String rating = scan.nextLine();
-                                        System.out.println("Category: ");
-                                        String category = scan.nextLine();
 
-                                        rf.createRecipe(recipeName, difficulty, steps, description, cook_time, servings, rating, date, username, category);
+                                        rf.createRecipe(recipeName, difficulty, steps, description, cook_time, servings, rating, date, username);
                                         break;
                                     case 2:
                                         scan.nextLine();
@@ -208,7 +206,13 @@ public class Interface {
                             }
                             break;
                         case 2:
-                            //database work
+                            scan.nextLine();
+                            System.out.println("Category: ");
+                            String category = scan.nextLine();
+                            System.out.println("Recipe Name: ");
+                            String recipe = scan.nextLine();
+
+                            rf.categorizeRecipe(category, recipe);
                             break;
                         case 3:
                             //database work
@@ -227,7 +231,7 @@ public class Interface {
                             System.out.println("Invalid input, try again");
                             break;
                     }
-                } catch(InputMismatchException ime){
+                } catch(InputMismatchException | SQLException ime){
                     System.out.println("Sorry, the input you entered wasn't an integer");
                 }
             }

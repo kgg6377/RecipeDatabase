@@ -11,11 +11,11 @@ public class RecipeFunctionality {
         this.connection = connection;
     }
 
-    public void createRecipe(String name, String difficulty, String steps, String description, String cook_time, String servings, String rating, String creation_date, String created_by, String category) throws SQLException {
+    public void createRecipe(String name, String difficulty, String steps, String description, String cook_time, String servings, String rating, String creation_date, String created_by) throws SQLException {
         String value = "'" + name + "'" + "," + "'" +difficulty +"'"+ "," + "'"+steps+"'" + "," + "'"+description+"'" + "," + "'"+cook_time+"'" + "," + "'"+servings+"'"+ "," + "'"+rating+"'"
-                + "," + "'"+creation_date+"'" + "," + "'"+created_by+"'" + "," + "'"+category+"'";
+                + "," + "'"+creation_date+"'" + "," + "'"+created_by+"'";
         System.out.println(value);
-        PreparedStatement ps = connection.prepareStatement("INSERT INTO recipe (name, difficulty, steps, description, cook_time, servings, rating, creation_date, created_by, category) " +
+        PreparedStatement ps = connection.prepareStatement("INSERT INTO recipes (name, difficulty, steps, description, cook_time, servings, rating, creation_date, created_by) " +
                 "VALUES(" + value + ")");
         ps.executeUpdate();
     }
@@ -60,4 +60,25 @@ public class RecipeFunctionality {
         return true;
     }
 
+    public void categorizeRecipe(String category, String recipeName) throws SQLException{
+        PreparedStatement ps = connection.prepareStatement("Select category from categories where  "+ "\"recipeName\"" + "= '"+ recipeName +"' and category = '"+ category +"'");
+        ResultSet resultSet = ps.executeQuery();
+        resultSet.next();
+
+        //check if category already exists for the recipeName
+        //if true -> do nothing return
+        //else -> enter category into database
+        try{
+            String result = resultSet.getString(1);
+            System.out.println("Category/Recipe already has been categorized, please try again");
+            return;
+        }catch (PSQLException ignored){ }
+        ps.clearParameters();
+        ps = connection.prepareStatement("INSERT INTO categories (category, "+ "\"recipeName\"" +") VALUES ('"+ category +"', '"+ recipeName +"')");
+        ps.executeUpdate();
+    }
+
+
+    //Query to find categories a recipe is related to, most likely can be used for other foreign key problems
+    //SELECT category from categories inner join recipes r on r.name = categories."recipeName" where r.name = '2'
 }
