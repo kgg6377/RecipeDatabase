@@ -180,6 +180,7 @@ public class Interface {
                                         String rating = scan.nextLine();
 
                                         rf.createRecipe(recipeName, difficulty, steps, description, cook_time, servings, rating, date, username);
+                                        rf.insertRecipeIngredients(recipeName);
                                         break;
                                     case 2:
                                         scan.nextLine();
