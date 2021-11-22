@@ -253,6 +253,7 @@ public class Interface {
                             } catch (SQLException throwables) {
                                 throwables.printStackTrace();
                             }
+                            break;
                         case 0:
                             bot = false;
                             validLogin = false;

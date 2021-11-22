@@ -69,7 +69,7 @@ public class RecipeFunctionality {
         //if true -> do nothing return
         //else -> enter category into database
         try{
-            String result = resultSet.getString(1);
+            String result = resultSet.getString(0);
             System.out.println("Category/Recipe already has been categorized, please try again");
             return;
         }catch (PSQLException ignored){ }
@@ -79,11 +79,37 @@ public class RecipeFunctionality {
     }
 
     public void topRatedRecommend() throws SQLException{
-        //top-rated
+        PreparedStatement ps = connection.prepareStatement("Select name from recipes order by rating desc limit 50");
+        ResultSet resultSet = ps.executeQuery();
+
+        try{
+            System.out.println("Top 50 Rated Recipes:");
+            for(int i = 0; i < 50; i++) {
+                if(resultSet.next()) {
+                    System.out.println(resultSet.getString(1));
+                } else
+                    break;
+            }
+        }catch (PSQLException ignored){ }
+        System.out.println();
+        ps.clearParameters();
     }
 
     public void mostRecentRecommend() throws SQLException{
-        //most recent
+        PreparedStatement ps = connection.prepareStatement("Select name from recipes order by creation_date desc limit 50");
+        ResultSet resultSet = ps.executeQuery();
+
+        try{
+            System.out.println("Top 50 Most Recent Recipes:");
+            for(int i = 0; i < 50; i++) {
+                if(resultSet.next()) {
+                    System.out.println(resultSet.getString(1));
+                } else
+                    break;
+            }
+        }catch (PSQLException ignored){ }
+        System.out.println();
+        ps.clearParameters();
     }
 
     public void inPantryRecommend() throws SQLException{
