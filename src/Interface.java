@@ -145,6 +145,7 @@ public class Interface {
                 System.out.println("\t 3. Search a Recipe");
                 System.out.println("\t 4. Sort Recipes");
                 System.out.println("\t 5. Mark a Recipe");
+                System.out.println("\t 6. Recommend a Recipe");
                 System.out.println("\t 0. Exit");
 
                 try{
@@ -223,6 +224,35 @@ public class Interface {
                         case 5:
                             //database work
                             break;
+                        case 6:
+                            System.out.println("Please select from the following options.");
+                            System.out.println("\t 1. Top Rated Recipes");
+                            System.out.println("\t 2. Most Recent Recipes");
+                            System.out.println("\t 3. In the Pantry Recipes");
+                            System.out.println("\t 4. Recommended for You");
+                            try {
+                                int userChoice2 = scan.nextInt();
+                                switch(userChoice2) {
+                                    case 1:
+                                        rf.topRatedRecommend();
+                                        break;
+                                    case 2:
+                                        rf.mostRecentRecommend();
+                                        break;
+                                    case 3:
+                                        rf.inPantryRecommend();
+                                        break;
+                                    case 4:
+                                        rf.forYouRecommend();
+                                        break;
+                                    default:
+                                        System.out.println("Invalid input, try again");
+                                }
+                            } catch(InputMismatchException ime){
+                                System.out.println("Sorry, the input you entered wasn't an integer");
+                            } catch (SQLException throwables) {
+                                throwables.printStackTrace();
+                            }
                         case 0:
                             bot = false;
                             validLogin = false;

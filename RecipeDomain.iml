@@ -7,19 +7,19 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/Downloads/JavaPostgresSSHJars 2/jsch-0.1.55.jar!/" />
+          <root url="jar://$USER_HOME$/OneDrive/Documents/Classes/CSCI 320 - Principles of Data Management/Project/JavaPostgresSSHJars/jsch-0.1.55.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
+    <orderEntry type="module-library" exported="">
       <library>
         <CLASSES>
-          <root url="jar://$USER_HOME$/Downloads/JavaPostgresSSHJars 2/postgresql-42.2.24.jar!/" />
+          <root url="jar://$USER_HOME$/OneDrive/Documents/Classes/CSCI 320 - Principles of Data Management/Project/JavaPostgresSSHJars/postgresql-42.2.24.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
