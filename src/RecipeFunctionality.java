@@ -1,5 +1,6 @@
 import org.postgresql.util.PSQLException;
 
+import javax.xml.transform.Result;
 import java.sql.*;
 
 public class RecipeFunctionality {
@@ -119,6 +120,51 @@ public class RecipeFunctionality {
 
     public void forYouRecommend() throws SQLException{
         //for you
+    }
+
+    public int getIngQty(String name) throws SQLException{
+        try {
+            PreparedStatement ps = connection.prepareStatement("select current_qty from pantry_ingredients where ingredient_name='" + name + "'");
+            ResultSet resultSet = ps.executeQuery();
+            resultSet.next();
+            ps.clearParameters();
+            return Integer.parseInt(resultSet.getString(1));
+        } catch (SQLException sqlException) {
+            return 0;
+        }
+    }
+
+    public boolean ingExists(String name) throws SQLException{
+        PreparedStatement ps = connection.prepareStatement("select ingredient from pantry where ingredient='" + name + "'");
+        ResultSet resultSet = ps.executeQuery();
+        return resultSet.next();
+    }
+
+    public void editCurrentQty(String name, int qty) throws SQLException {
+        PreparedStatement ps = connection.prepareStatement("select current_qty from pantry_ingredients where ingredient_name='" + name + "'");
+        ResultSet resultSet = ps.executeQuery();
+        resultSet.next();
+        ps.clearParameters();
+
+        int currentQty = Integer.parseInt(resultSet.getString(1));
+        currentQty += qty;
+
+        ps = connection.prepareStatement("update pantry_ingredients set current_qty = " + currentQty + "where ingredient_name = '" + name + "'");
+        ps.executeUpdate();
+        ps.clearParameters();
+    }
+
+    public void addPantryIng(String name, String date, int qty, String exp, int currQty, String aisle, String username) throws SQLException{
+        currQty += qty;
+        PreparedStatement ps = connection.prepareStatement("insert into pantry (ingredient, aisle, username) " +
+                "VALUES( '" + name + "','" + aisle + "','" + username + "')");
+        ps.executeUpdate();
+        String values = "'" + name + "','" + date + "','" + qty + "','" + exp + "','" + currQty + "','" + username + "'";
+        System.out.println(values);
+        ps = connection.prepareStatement("insert into pantry_ingredients (ingredient_name, purchase_date, qty_bought, expiration_date, current_qty, username) " +
+                "VALUES(" + values + ")");
+        ps.executeUpdate();
+        ps.clearParameters();
     }
 
     //Query to find categories a recipe is related to, most likely can be used for other foreign key problems

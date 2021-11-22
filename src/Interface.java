@@ -146,6 +146,7 @@ public class Interface {
                 System.out.println("\t 4. Sort Recipes");
                 System.out.println("\t 5. Mark a Recipe");
                 System.out.println("\t 6. Recommend a Recipe");
+                System.out.println("\t 7. Enter the Pantry");
                 System.out.println("\t 0. Exit");
 
                 try{
@@ -164,7 +165,7 @@ public class Interface {
                                         scan.nextLine();
                                         System.out.println("Recipe Name: ");
                                         String recipeName = scan.nextLine();
-                                        System.out.println("Difficulty(easy, medium, hard): ");
+                                        System.out.println("Difficulty(easy, easymedium, medium, mediumhard, hard): ");
                                         String difficulty = scan.next();
                                         scan.nextLine();
                                         System.out.println("Steps(One long description): ");
@@ -229,7 +230,7 @@ public class Interface {
                                 switch(userChoice3){
                                     case 1:
                                         scan.nextLine();
-                                        System.out.println("Enter an ingredient: ");
+                                        System.out.println("Ingredient: ");
                                         String ingredient = scan.nextLine();
                                         rf.searchRecipe(ingredient, 1);
                                         break;
@@ -282,8 +283,44 @@ public class Interface {
                                     default:
                                         System.out.println("Invalid input, try again");
                                 }
-                            } catch(InputMismatchException ime){
+                            } catch (InputMismatchException ime){
                                 System.out.println("Sorry, the input you entered wasn't an integer");
+                            } catch (SQLException throwables) {
+                                throwables.printStackTrace();
+                            }
+                            break;
+                        case 7:
+                            System.out.println("Please select from the following options");
+                            System.out.println("\t 1. Add to the pantry");
+                            System.out.println("\t 2. Remove from the pantry");
+
+                            try {
+                                int userChoice2 = scan.nextInt();
+                                switch (userChoice2) {
+                                    case 1:
+                                        scan.nextLine();
+                                        System.out.println("Ingredient:");
+                                        String name = scan.nextLine();
+                                        int current_qty = rf.getIngQty(name);
+                                        System.out.println("Quantity Bought:");
+                                        String qtyString = scan.nextLine();
+                                        int qty = Integer.parseInt(qtyString);
+                                        System.out.println("Expiration Date(YYYY-MM-DD):");
+                                        String exp = scan.nextLine();
+                                        System.out.println("Aisle:");
+                                        String aisle = scan.nextLine();
+                                        if (rf.ingExists(name)) {
+                                            rf.editCurrentQty(name, qty);
+                                        } else {
+                                            rf.addPantryIng(name, date, qty, exp, current_qty, aisle, username);
+                                        }
+                                        break;
+                                    case 2:
+                                        //remove ingredients
+                                        break;
+                                }
+                            } catch (InputMismatchException ime){
+                            System.out.println("Sorry, the input you entered wasn't an integer");
                             } catch (SQLException throwables) {
                                 throwables.printStackTrace();
                             }
