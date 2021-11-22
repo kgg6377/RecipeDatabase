@@ -1,6 +1,7 @@
 import org.postgresql.util.PSQLException;
 
 import java.sql.*;
+import java.util.Scanner;
 
 public class RecipeFunctionality {
     String username;
@@ -9,6 +10,30 @@ public class RecipeFunctionality {
     public RecipeFunctionality(String username, Connection connection){
         this.username = username;
         this.connection = connection;
+    }
+
+    public void insertRecipeIngredients(String recipeName) throws SQLException {
+        System.out.println("Please Enter Recipe Ingredients");
+        Scanner scan = new Scanner(System.in);
+
+        while(true){
+            System.out.println("Ingredient Name: ");
+            String name = scan.nextLine();
+            System.out.println("Amount: ");
+            String qty = scan.nextLine();
+            String SQLStatement = "INSERT INTO recipe_ingredients (qty, name, recipe) VALUES ('"+qty+"','"+name+"','"+recipeName+"')";
+
+            PreparedStatement ps = connection.prepareStatement(SQLStatement);
+            ps.executeUpdate();
+            ps.clearParameters();
+
+            System.out.println("\t 1. Continue");
+            System.out.println("\t 2. Exit");
+            int userChoice = scan.nextInt();
+            if(userChoice == 2) break;
+            scan.nextLine();
+        }
+
     }
 
     public void createRecipe(String name, String difficulty, String steps, String description, String cook_time, String servings, String rating, String creation_date, String created_by) throws SQLException {
@@ -125,6 +150,8 @@ public class RecipeFunctionality {
     //SELECT category from categories inner join recipes r on r.name = categories."recipeName" where r.name = '2'
 
     //SELECT * FROM recipes where name = '1' ORDER BY name ASC
+
+    //TODO Not sure if what we should return  just the recipe name or the entire recipe row
     public void searchRecipe(String sort, int searchParameter) throws SQLException {
         PreparedStatement ps;
         //Sort by name after filtered by search parameter
@@ -139,7 +166,6 @@ public class RecipeFunctionality {
         }
         ResultSet resultSet = ps.executeQuery();
 
-        //Expand on function
         try{
             System.out.println("Search Results:");
             for(int i = 0; i < Integer.MAX_VALUE; i++) {
