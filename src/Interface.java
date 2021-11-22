@@ -216,7 +216,41 @@ public class Interface {
                             rf.categorizeRecipe(category, recipe);
                             break;
                         case 3:
-                            //database work
+                            System.out.println("Please select from the following options.");
+                            System.out.println("\t 1. Search by Ingredient");
+                            System.out.println("\t 2. Search by Name");
+                            System.out.println("\t 3. Search by Category");
+                            try{
+                                int userChoice3 = scan.nextInt();
+                                if(userChoice3 < 1 || userChoice3 > 3) {
+                                    System.out.println("Invalid input, please choose between 1-3");
+                                    break;
+                                }
+                                switch(userChoice3){
+                                    case 1:
+                                        scan.nextLine();
+                                        System.out.println("Enter an ingredient: ");
+                                        String ingredient = scan.nextLine();
+                                        rf.searchRecipe(ingredient, 1);
+                                        break;
+                                    case 2:
+                                        scan.nextLine();
+                                        System.out.println("Enter a name: ");
+                                        String name = scan.nextLine();
+                                        rf.searchRecipe(name, 2);
+                                        break;
+                                    case 3:
+                                        scan.nextLine();
+                                        System.out.println("Enter a category: ");
+                                        String category1 = scan.nextLine();
+                                        rf.searchRecipe(category1, 3);
+                                        break;
+                                    default:
+                                        break;
+                                }
+                            } catch(InputMismatchException ime){
+                                System.out.println("Sorry, the input you entered wasn't an integer");
+                            }
                             break;
                         case 4:
                             //database work

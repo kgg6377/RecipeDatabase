@@ -52,6 +52,7 @@ public class RecipeFunctionality {
         PreparedStatement ps = connection.prepareStatement("SELECT name FROM recipe WHERE created_by = '" + username +"' AND name = '" + recipeName +"'");
         ResultSet resultSet = ps.executeQuery();
         resultSet.next();
+
         try{
             String result = resultSet.getString(1);
         }catch (PSQLException e){
@@ -120,7 +121,34 @@ public class RecipeFunctionality {
         //for you
     }
 
-
     //Query to find categories a recipe is related to, most likely can be used for other foreign key problems
     //SELECT category from categories inner join recipes r on r.name = categories."recipeName" where r.name = '2'
+
+    //SELECT * FROM recipes where name = '1' ORDER BY name ASC
+    public void searchRecipe(String sort, int searchParameter) throws SQLException {
+        PreparedStatement ps;
+        //Sort by name after filtered by search parameter
+        if(searchParameter == 1){
+            String s = "SELECT * from recipes inner join recipe_ingredients ri on recipes.name = ri.recipe where ri.name = '"+ sort +"' ORDER BY recipes.name ASC";
+            ps = connection.prepareStatement("SELECT * FROM recipes inner join recipe_ingredients ri on recipes.name = ri.recipe where ri.name = '"+ sort +"' ORDER BY recipes.name ASC");
+            System.out.println(s);
+        }else if (searchParameter == 2){
+            ps = connection.prepareStatement("SELECT * FROM recipes where name = '"+ sort +"' ORDER BY name ASC");
+        }else {
+            ps = connection.prepareStatement("SELECT * FROM recipes inner join categories c on recipes.name = c.\"recipeName\" where c.category = '" + sort + "' ORDER BY name ASC");
+        }
+        ResultSet resultSet = ps.executeQuery();
+
+        //Expand on function
+        try{
+            System.out.println("Search Results:");
+            for(int i = 0; i < Integer.MAX_VALUE; i++) {
+                if(resultSet.next()) {
+                    System.out.println(resultSet.getString(1));
+                } else
+                    break;
+            }
+        }catch (PSQLException ignored){ }
+        System.out.println();
+    }
 }
