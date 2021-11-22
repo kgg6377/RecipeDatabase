@@ -78,6 +78,22 @@ public class RecipeFunctionality {
         ps.executeUpdate();
     }
 
+    public void topRatedRecommend() throws SQLException{
+        //top-rated
+    }
+
+    public void mostRecentRecommend() throws SQLException{
+        //most recent
+    }
+
+    public void inPantryRecommend() throws SQLException{
+        //in the pantry
+    }
+
+    public void forYouRecommend() throws SQLException{
+        //for you
+    }
+
 
     //Query to find categories a recipe is related to, most likely can be used for other foreign key problems
     //SELECT category from categories inner join recipes r on r.name = categories."recipeName" where r.name = '2'
