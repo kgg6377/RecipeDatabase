@@ -144,7 +144,15 @@ public class RecipeFunctionality {
             System.out.println("Search Results:");
             for(int i = 0; i < Integer.MAX_VALUE; i++) {
                 if(resultSet.next()) {
-                    System.out.println(resultSet.getString(1));
+                    StringBuilder result = new StringBuilder();
+                    for(int z = 1; z <  10; z++){
+                        if(z == 9){
+                            result.append(resultSet.getString((z)));
+                            break;
+                        }
+                        result.append(resultSet.getString(z)).append(", ");
+                    }
+                    System.out.println(result.toString());
                 } else
                     break;
             }
