@@ -166,15 +166,19 @@ public class RecipeFunctionality {
     }
 
     public void editCurrentQty(String name, int qty) throws SQLException {
-        PreparedStatement ps = connection.prepareStatement("select current_qty from pantry_ingredients where ingredient_name='" + name + "'");
+        PreparedStatement ps = connection.prepareStatement("select qty_bought, current_qty from pantry_ingredients where ingredient_name='" + name + "'");
         ResultSet resultSet = ps.executeQuery();
         resultSet.next();
         ps.clearParameters();
 
-        int currentQty = Integer.parseInt(resultSet.getString(1));
+        int qtyBought = Integer.parseInt(resultSet.getString(1));
+        int currentQty = Integer.parseInt(resultSet.getString(2));
+        if (qty >= 0) {
+            qtyBought += qty;
+        }
         currentQty += qty;
 
-        ps = connection.prepareStatement("update pantry_ingredients set current_qty = " + currentQty + "where ingredient_name = '" + name + "'");
+        ps = connection.prepareStatement("update pantry_ingredients set qty_bought = " + qtyBought + ", current_qty = " + currentQty + "where ingredient_name = '" + name + "'");
         ps.executeUpdate();
         ps.clearParameters();
     }

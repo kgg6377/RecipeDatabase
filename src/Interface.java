@@ -317,7 +317,20 @@ public class Interface {
                                         }
                                         break;
                                     case 2:
-                                        //remove ingredients
+                                        scan.nextLine();
+                                        System.out.println("Ingredient:");
+                                        name = scan.nextLine();
+                                        current_qty = rf.getIngQty(name);
+                                        System.out.println("Quantity:");
+                                        qtyString = scan.nextLine();
+                                        qty = Integer.parseInt(qtyString);
+                                        if(!rf.ingExists(name)) {
+                                            System.out.println("Ingredient isn't in pantry");
+                                        } else if(qty > current_qty) {
+                                            System.out.println("Not enough ingredients\nCurrent Quantity is " + current_qty);
+                                        } else {
+                                            rf.editCurrentQty(name, -1 * qty);
+                                        }
                                         break;
                                 }
                             } catch (InputMismatchException ime){
