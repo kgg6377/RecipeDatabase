@@ -128,6 +128,7 @@ public class RecipeFunctionality {
 
         try{
             System.out.println("Top 50 Most Recent Recipes:");
+            System.out.println("---------------------------");
             for(int i = 0; i < 50; i++) {
                 if(resultSet.next()) {
                     System.out.println(resultSet.getString(1));
@@ -139,8 +140,25 @@ public class RecipeFunctionality {
         ps.clearParameters();
     }
 
-    public void inPantryRecommend() throws SQLException{
-        //in the pantry
+    public void inPantryRecommend(String username) throws SQLException{
+        PreparedStatement ps = connection.prepareStatement("select recipe, count(name) from recipe_ingredients ri inner join pantry_ingredients pi on " +
+                "ri.qty < pi.current_qty and ri.name=pi.ingredient_name and pi.username='" + username + "' group by recipe");
+        ResultSet resultSet = ps.executeQuery();
+        ps.clearParameters();
+        System.out.println("In the Pantry Recipes:");
+        System.out.println("----------------------");
+        while(resultSet.next()) {
+            String recipe = resultSet.getString(1);
+            ps = connection.prepareStatement("select recipe, count(name) from recipe_ingredients where recipe='" + recipe + "' group by recipe");
+            ResultSet resultSet1 = ps.executeQuery();
+            ps.clearParameters();
+            resultSet1.next();
+
+            if(resultSet.getString(2).equals(resultSet1.getString(2))) {
+                System.out.println(resultSet.getString(1));
+            }
+        }
+        System.out.println();
     }
 
     public void forYouRecommend() throws SQLException{
@@ -153,7 +171,7 @@ public class RecipeFunctionality {
             ResultSet resultSet = ps.executeQuery();
             resultSet.next();
             ps.clearParameters();
-            return Integer.parseInt(resultSet.getString(1));
+            return resultSet.getInt(1);
         } catch (SQLException sqlException) {
             return 0;
         }
@@ -171,8 +189,8 @@ public class RecipeFunctionality {
         resultSet.next();
         ps.clearParameters();
 
-        int qtyBought = Integer.parseInt(resultSet.getString(1));
-        int currentQty = Integer.parseInt(resultSet.getString(2));
+        int qtyBought = resultSet.getInt(1);
+        int currentQty = resultSet.getInt(2);
         if (qty >= 0) {
             qtyBought += qty;
         }

@@ -276,7 +276,7 @@ public class Interface {
                                         rf.mostRecentRecommend();
                                         break;
                                     case 3:
-                                        rf.inPantryRecommend();
+                                        rf.inPantryRecommend(username);
                                         break;
                                     case 4:
                                         rf.forYouRecommend();
