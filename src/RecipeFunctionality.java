@@ -162,7 +162,9 @@ public class RecipeFunctionality {
     }
 
     public void forYouRecommend() throws SQLException{
-        //for you
+        System.out.println("Recipes Recommended for You:");
+        System.out.println("----------------------------");
+        System.out.println("Not implemented yet. Sorry :(");
     }
 
     public int getIngQty(String name) throws SQLException{
